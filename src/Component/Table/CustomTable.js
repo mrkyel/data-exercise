@@ -3,17 +3,44 @@ import { jsx, css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Button, Table } from "antd";
 import CustomPagination from "Component/Pagination/CustomPagination";
-import React, { useState } from "react";
+import { useState } from "react";
+import { PieChart } from "react-minimal-pie-chart";
 import { getPatientList } from "../../apis/CommonApis";
 import { Tablecolumns } from "./TableColumns";
 
 function CustomTable() {
+
+  const expandedRowRender = () => {
+    const columns = [
+      { title: '전체방문 수', dataIndex: 'visitCount', key: 'personID' },
+      { title: 'Name', dataIndex: 'name', key: 'name' },
+      {
+        title: 'Status',
+        key: 'state',
+        render: (record) => console.log(record),
+      },
+      { title: 'Upgrade Status', dataIndex: 'upgradeNum', key: 'upgradeNum' },
+    ];
+
+    const data = [];
+    for (let i = 0; i < 3; ++i) {
+      data.push({
+        key: i,
+        date: '2014-12-24 23:12:00',
+        name: 'This is production name',
+        upgradeNum: 'Upgraded: 56',
+      });
+    }
+    return <Table columns={columns} dataSource={data} pagination={false}/>;
+  };
+
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
   });
+  const [gender, setGender] = useState(false);
 
   const getData = async () => {
     setLoading(true);
@@ -61,6 +88,27 @@ function CustomTable() {
       };
       const res = await getPatientList(params);
       setData(res.patient);
+      setGender(true);
+    }
+    if (filters.ethnicity) {
+      const params = {
+        page: pagination.current,
+        length: pagination.pageSize,
+        ethnicity: filters.ethnicity[0],
+        order_desc: sorter.order === "ascend" ? false : true,
+      };
+      const res = await getPatientList(params);
+      setData(res.patient);
+    }
+    if (filters.race) {
+      const params = {
+        page: pagination.current,
+        length: pagination.pageSize,
+        race: filters.race[0],
+        order_desc: sorter.order === "ascend" ? false : true,
+      };
+      const res = await getPatientList(params);
+      setData(res.patient);
     }
   }
 
@@ -82,14 +130,26 @@ function CustomTable() {
     });
   };
 
+  console.log(data);
+
   if (loading) return <div>Loading . . .</div>;
   return (
     <>
+      {gender && <PieChart
+      viewBoxSize={[100,100]}
+        data={
+          [
+            { title: '남자', value: data?.totalLength, color: '#E38627'},
+            { title: '여자', value: 1000 - data?.totalLength, color: '#C13C37'}
+          ]
+        }
+      />}
       <TableWrapper>
         <Button css={ButtonStyle} onClick={getData}>
           조회
         </Button>
         <Table
+          expandable={{expandedRowRender}}
           columns={Tablecolumns}
           rowKey={(record) => record.personID}
           dataSource={data.list}

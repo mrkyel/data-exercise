@@ -31,12 +31,44 @@ export const Tablecolumns = [
   {
     title: "인종",
     dataIndex: "race",
-    sorter: true
+    sorter: true,
+    filters: [
+      {
+        text : '기타',
+        value : 'other',
+      },
+      {
+        text : '원주민',
+        value : 'native'
+      },
+      {
+        text : '흑인',
+        value : 'black'
+      },
+      {
+        text : '백인',
+        value : 'white'
+      },
+      {
+        text : '아시아인',
+        value : 'asian'
+      }
+    ],
   },
   {
     title: "민족",
     dataIndex: "ethnicity",
-    sorter: true
+    sorter: true,
+    filters: [
+      {
+        text : 'nonhispanic',
+        value : 'nonhispanic',
+      },
+      {
+        text : 'hispanic',
+        value : 'hispanic'
+      }
+    ], 
   },
   {
     title: "사망 여부",
