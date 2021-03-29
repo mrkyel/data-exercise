@@ -33,21 +33,35 @@ function CustomTable() {
       alert("조회버튼을 먼저 눌러주세요");
       return false;
     }
-    const params = {
-      page: pagination.current,
-      length: pagination.pageSize,
-      order_column:
-        sorter.field === "personID"
-          ? "person_id"
-          : sorter.field === "birthDatetime"
-          ? "birth"
-          : sorter.field === "isDeath"
-          ? "death"
-          : sorter.field.toLowerCase(),
-      order_desc: sorter.order === "ascend" ? false : true,
-    };
-    const res = await getPatientList(params);
-    setData(res.patient);
+    console.log(filters);
+    if (sorter.length > 0) {
+      const params = {
+        page: pagination.current,
+        length: pagination.pageSize,
+        order_column:
+          sorter.field === "personID"
+            ? "person_id"
+            : sorter.field === "birthDatetime"
+            ? "birth"
+            : sorter.field === "isDeath"
+            ? "death"
+            : sorter.field.toLowerCase(),
+        order_desc: sorter.order === "ascend" ? false : true,
+      };
+      const res = await getPatientList(params);
+      setData(res.patient);
+    }
+
+    if (filters.gender) {
+      const params = {
+        page: pagination.current,
+        length: pagination.pageSize,
+        gender: filters.gender[0],
+        order_desc: sorter.order === "ascend" ? false : true,
+      };
+      const res = await getPatientList(params);
+      setData(res.patient);
+    }
   }
 
   const paginationOnChange = async (page, pageSize) => {

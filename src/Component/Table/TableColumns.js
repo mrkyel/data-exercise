@@ -7,7 +7,17 @@ export const Tablecolumns = [
   {
     title: "성별",
     dataIndex: "gender",
-    sorter: true
+    sorter: true,
+    filters: [
+      {
+        text : 'Male',
+        value : 'M',
+      },
+      {
+        text : 'Female',
+        value : 'F'
+      }
+    ], 
   },
   {
     title: "생년월일",
